@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangalore Ultimate Thrift & Surplus Map</title>
+    <style>
+        :root {
+
+            --bg-canvas: #0d1117;
+            --bg-subtle: #161b22;
+            --border-default: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-green: #238636;
+            --accent-green-hover: #2ea043;
+            --accent-blue: #58a6ff;
+            --accent-orange: #f78166;
+            --btn-bg: #21262d;
+            --btn-hover: #30363d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding-bottom: 50px;
+        }
+
+        /* Centered Header */
+        header {
+            background-color: var(--bg-subtle);
+            border-bottom: 1px solid var(--border-default);
+            padding: 24px 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        h1 img {
+            height: 40px;
+            border-radius: 6px; /* Soft edges for the screenshot */
+            object-fit: contain;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 600px;
+        }
+
+        /* Original Tab Style */
+        .tabs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-default);
+            margin-bottom: 24px;
+            scrollbar-width: none;
+            justify-content: flex-start; /* Allows scrolling on mobile */
+        }
+
+        /* Center tabs on desktop if they fit */
+        @media (min-width: 900px) {
+            .tabs {
+                justify-content: center;
+            }
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+        }
+
+        .tab-btn:hover {
+            opacity: 1;
+            border-bottom-color: var(--text-secondary);
+        }
+
+        .tab-btn.active {
+            font-weight: 600;
+            opacity: 1;
+            border-bottom: 2px solid var(--accent-orange); 
+        }
+
+        /* Content Area */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+
+        .shop-card {
+            background-color: var(--bg-canvas);
+            border: 1px solid var(--border-default);
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .shop-card:hover {
+            border-color: var(--text-secondary);
+            transform: translateY(-2px);
+        }
+
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+
+        .shop-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        .shop-tag {
+            border: 1px solid var(--border-default);
+            border-radius: 2em;
+            padding: 2px 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .shop-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            flex-grow: 1;
+        }
+
+        .shop-meta {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            border-top: 1px solid var(--border-default);
+            padding-top: 12px;
+        }
+
+        .map-btn {
+            display: block;
+            background-color: var(--btn-bg);
+            color: var(--accent-green);
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 12px;
+            text-align: center;
+            border: 1px solid var(--border-default);
+            transition: all 0.2s;
+        }
+
+        .map-btn:hover {
+            background-color: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>
+        <img src="https://res.cloudinary.com/dqwbkjfuh/image/upload/v1764588498/Screenshot_2025-11-26_at_6.58.01_PM_m1stjx.png" alt="Logo">
+        Bangalore Clothing Guide
+    </h1>
+    <div class="subtitle">Curated list of 70+ Thrift Stores, Surplus Warehouses & Factory Outlets</div>
+</header>
+
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'hsr')">HSR Layout</button>
+        <button class="tab-btn" onclick="openTab(event, 'koramangala')">Koramangala</button>
+        <button class="tab-btn" onclick="openTab(event, 'jayanagar')">Jayanagar</button>
+        <button class="tab-btn" onclick="openTab(event, 'jpnagar')">JP Nagar & BTM</button>
+        <button class="tab-btn" onclick="openTab(event, 'central')">Commercial/Brigade</button>
+        <button class="tab-btn" onclick="openTab(event, 'oldcity')">Chickpet/Majestic</button>
+    </div>
+</div>
+
+<div class="content-container">
+
+    <div id="hsr" class="tab-content active">
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Branded Apparels & Co</span><span class="shop-tag">Surplus</span></div><p class="shop-desc">Top Pick. Multi-brand surplus. Branded shirts/chinos at 60-70% off.</p><a href="https://www.google.com/maps/search/?api=1&query=Branded+Apparels+And+Co+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">World of Brands</span><span class="shop-tag">Winter</span></div><p class="shop-desc">Massive stock. Best for sweatshirts, hoodies, and zippers.</p><a href="https://www.google.com/maps/search/?api=1&query=World+of+Brands+HSR+Sector+6" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Classic Export Surplus</span><span class="shop-tag">Budget</span></div><p class="shop-desc">Basement store. Casuals, baggy tees, and jeans for cheap.</p><a href="https://www.google.com/maps/search/?api=1&query=Classic+Export+Surplus+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Brand O Brands</span><span class="shop-tag">Denim</span></div><p class="shop-desc">Surplus store with a good variety of denim and jackets.</p><a href="https://www.google.com/maps/search/?api=1&query=Brand+O+Brands+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Hip Hopz Brand Factory</span><span class="shop-tag">Streetwear</span></div><p class="shop-desc">Trendy streetwear, oversized tees, and cargo pants.</p><a href="https://www.google.com/maps/search/?api=1&query=Hip+Hopz+Brand+Factory+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Zudio</span><span class="shop-tag">Basics</span></div><p class="shop-desc">Best for plain oversized tees (₹299) and sliders (₹199).</p><a href="https://www.google.com/maps/search/?api=1&query=Zudio+HSR+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Fashion Factory</span><span class="shop-tag">Outlet</span></div><p class="shop-desc">Large outlet with mixed brands. Good for heavy winter wear.</p><a href="https://www.google.com/maps/search/?api=1&query=Fashion+Factory+HSR+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Just Casuals</span><span class="shop-tag">Workwear</span></div><p class="shop-desc">Excellent for office-friendly chinos and linen shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=Just+Casuals+HSR+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Style Union</span><span class="shop-tag">Trendy</span></div><p class="shop-desc">Aesthetic oversized shirts and cargos. Good pricing.</p><a href="https://www.google.com/maps/search/?api=1&query=Style+Union+HSR+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">OWND!</span><span class="shop-tag">Pre-Loved</span></div><p class="shop-desc">Mix of pre-loved and surplus. Good for unique finds.</p><a href="https://www.google.com/maps/search/?api=1&query=OWND+HSR+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Wonderkraftz Warehouse</span><span class="shop-tag">Bulk</span></div><p class="shop-desc">Wholesale vibe. Cheap deals on bulk items.</p><a href="https://www.google.com/maps/search/?api=1&query=Wonderkraftz+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Snitch</span><span class="shop-tag">Premium</span></div><p class="shop-desc">Slightly pricier (₹1k-2k) but best baggy cargos in town.</p><a href="https://www.google.com/maps/search/?api=1&query=Snitch+Store+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Club Jersey Store</span><span class="shop-tag">Sports</span></div><p class="shop-desc">Best for cheap football kits and track pants.</p><a href="https://www.google.com/maps/search/?api=1&query=Club+Jersey+Store+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">The Linen Collection</span><span class="shop-tag">Fabrics</span></div><p class="shop-desc">Factory rates for linen trousers and shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Linen+Collection+HSR" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Hifi Branded Surplus</span><span class="shop-tag">Budget</span></div><p class="shop-desc">Small shop but often has great graphic tees.</p><a href="https://www.google.com/maps/search/?api=1&query=Hifi+Branded+Surplus+HSR" target="_blank" class="map-btn">View on Map</a></div>
+    </div>
+
+    <div id="koramangala" class="tab-content">
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">EcoDhaga</span><span class="shop-tag">Thrift</span></div><p class="shop-desc">Sustainable vintage jackets/shirts. True thrift experience.</p><a href="https://www.google.com/maps/search/?api=1&query=EcoDhaga+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Hum India</span><span class="shop-tag">Legendary</span></div><p class="shop-desc">Huge surplus stock. Best for jackets, cargos, and shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=Hum+India+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Tibet Mall</span><span class="shop-tag">Imports</span></div><p class="shop-desc">Imported winter jackets, boots, and edgy fashion.</p><a href="https://www.google.com/maps/search/?api=1&query=Tibet+Mall+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Spice Girls</span><span class="shop-tag">Western</span></div><p class="shop-desc">Boutique for trendy western tops and dresses.</p><a href="https://www.google.com/maps/search/?api=1&query=Spice+Girls+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Jyoti Nivas Street</span><span class="shop-tag">Street</span></div><p class="shop-desc">Stalls for tops, pyjamas, and cheap accessories.</p><a href="https://www.google.com/maps/search/?api=1&query=Jyoti+Nivas+College+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">The Brand Station</span><span class="shop-tag">Denim</span></div><p class="shop-desc">Surplus store with decent denim and shirt collection.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Brand+Station+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Farm Boy</span><span class="shop-tag">Casuals</span></div><p class="shop-desc">Near BTM border. Good for daily wear shorts/tees.</p><a href="https://www.google.com/maps/search/?api=1&query=Farm+Boy+Clothing+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Fume</span><span class="shop-tag">Surplus</span></div><p class="shop-desc">Menswear, polos, and shorts at discounted rates.</p><a href="https://www.google.com/maps/search/?api=1&query=Fume+Clothing+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">KSB Collections</span><span class="shop-tag">Rugged</span></div><p class="shop-desc">Focus on denim and rugged wear.</p><a href="https://www.google.com/maps/search/?api=1&query=KSB+Collections+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">One Off</span><span class="shop-tag">Streetwear</span></div><p class="shop-desc">Often has pop-ups of streetwear aesthetic clothes.</p><a href="https://www.google.com/maps/search/?api=1&query=One+Off+Clothing+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Cherry Pie</span><span class="shop-tag">Fem</span></div><p class="shop-desc">Aesthetic dresses and tops (feminine focused).</p><a href="https://www.google.com/maps/search/?api=1&query=Cherry+Pie+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">The Brand Mate</span><span class="shop-tag">Jackets</span></div><p class="shop-desc">Reliable for jeans and jackets surplus.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Brand+Mate+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">5th Block Market</span><span class="shop-tag">Stalls</span></div><p class="shop-desc">Walk along main road for slippers and accessories.</p><a href="https://www.google.com/maps/search/?api=1&query=Koramangala+5th+Block+Police+Station" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Attic (Consignment)</span><span class="shop-tag">Thrift</span></div><p class="shop-desc">Pre-loved luxury/high-street brands. Unique finds.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Attic+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">H&M (Sale Section)</span><span class="shop-tag">Mall</span></div><p class="shop-desc">Nexus Mall. Check the Sale rack for baggy hoodies.</p><a href="https://www.google.com/maps/search/?api=1&query=H%26M+Nexus+Mall+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
+    </div>
+
+    <div id="jayanagar" class="tab-content">
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">4th Block Complex</span><span class="shop-tag">Hub</span></div><p class="shop-desc">50+ shops inside for slippers/pyjamas. Bargain hard.</p><a href="https://www.google.com/maps/search/?api=1&query=Jayanagar+4th+Block+Shopping+Complex" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">The Discount Store</span><span class="shop-tag">Basics</span></div><p class="shop-desc">Huge discounts on mixed apparel. Good for basics.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Discount+Store+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Street Vendors</span><span class="shop-tag">Cheap</span></div><p class="shop-desc">Opposite complex. Export reject joggers and tees.</p><a href="https://www.google.com/maps/search/?api=1&query=Jayanagar+4th+Block+Bus+Stand" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Jayanagar Market</span><span class="shop-tag">Fabrics</span></div><p class="shop-desc">Traditional and western mix. Fabrics/accessories.</p><a href="https://www.google.com/maps/search/?api=1&query=Jayanagar+Market" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">D's Design Studio</span><span class="shop-tag">Boutique</span></div><p class="shop-desc">Budget friendly boutique for custom fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Ds+Design+Studio+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Sketches</span><span class="shop-tag">Shoes</span></div><p class="shop-desc">Great for cheap footwear and loafers.</p><a href="https://www.google.com/maps/search/?api=1&query=Sketches+Footwear+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Max (Old Stock)</span><span class="shop-tag">Clearance</span></div><p class="shop-desc">Outlet often has older stock which is baggier/cheaper.</p><a href="https://www.google.com/maps/search/?api=1&query=Max+Fashion+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Reliance Trends</span><span class="shop-tag">Layers</span></div><p class="shop-desc">Good for basic kurtas/shirts to layer.</p><a href="https://www.google.com/maps/search/?api=1&query=Trends+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Go Colors</span><span class="shop-tag">Pants</span></div><p class="shop-desc">Good for leggings/pants if you need basics.</p><a href="https://www.google.com/maps/search/?api=1&query=Go+Colors+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Pantaloons Factory</span><span class="shop-tag">Outlet</span></div><p class="shop-desc">Factory outlet nearby for branded rejects.</p><a href="https://www.google.com/maps/search/?api=1&query=Pantaloons+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Tibetan Plaza</span><span class="shop-tag">Winter</span></div><p class="shop-desc">Good for winter jackets and boots.</p><a href="https://www.google.com/maps/search/?api=1&query=Tibetan+Plaza+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Cool Planet</span><span class="shop-tag">Kids/Teens</span></div><p class="shop-desc">Good for small sizes and accessories.</p><a href="https://www.google.com/maps/search/?api=1&query=Cool+Planet+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Megamart</span><span class="shop-tag">Outlet</span></div><p class="shop-desc">Discounted brands, especially Ruggers/Colt.</p><a href="https://www.google.com/maps/search/?api=1&query=Megamart+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Local Leather Guy</span><span class="shop-tag">Repairs</span></div><p class="shop-desc">Belt/Wallet guys at Complex entrance.</p><a href="https://www.google.com/maps/search/?api=1&query=Jayanagar+Complex+Entrance" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">The High Street</span><span class="shop-tag">Mix</span></div><p class="shop-desc">Mix of brands and small shops.</p><a href="https://www.google.com/maps/search/?api=1&query=The+High+Street+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
+    </div>
+
+    <div id="jpnagar" class="tab-content">
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Texs Mart</span><span class="shop-tag">Mega</span></div><p class="shop-desc">Offline Myntra sale. Innerwear to jackets, very cheap.</p><a href="https://www.google.com/maps/search/?api=1&query=Texs+Mart+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Escape Closet</span><span class="shop-tag">Aesthetic</span></div><p class="shop-desc">Vintage jackets, corsets, baggy denim. Unique finds.</p><a href="https://www.google.com/maps/search/?api=1&query=Escape+Closet+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Bengaluru Brand Warehouse</span><span class="shop-tag">Premium</span></div><p class="shop-desc">Surplus family store. Garments and footwear.</p><a href="https://www.google.com/maps/search/?api=1&query=Bengaluru+Brand+Warehouse+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Branded Hub</span><span class="shop-tag">Wholesale</span></div><p class="shop-desc">Wholesale & retail surplus in BTM Layout.</p><a href="https://www.google.com/maps/search/?api=1&query=Branded+Hub+BTM+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Brand Shoppe & Co</span><span class="shop-tag">Bulk</span></div><p class="shop-desc">Branded surplus stocklots. Bulk buying basics.</p><a href="https://www.google.com/maps/search/?api=1&query=Brand+Shoppe+And+Co+Bommanahalli" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Roboskin Jackets</span><span class="shop-tag">Leather</span></div><p class="shop-desc">JP Nagar branch. Best for affordable leather jackets.</p><a href="https://www.google.com/maps/search/?api=1&query=Roboskin+Jackets+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Fashion Factory</span><span class="shop-tag">Sport</span></div><p class="shop-desc">Great for sportswear and tracksuits.</p><a href="https://www.google.com/maps/search/?api=1&query=Fashion+Factory+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Brand Ware House</span><span class="shop-tag">Jeans</span></div><p class="shop-desc">BTM Branch. Consistent quality for jeans and shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=Brand+Ware+House+BTM" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">The Deal Store</span><span class="shop-tag">Tees</span></div><p class="shop-desc">BTM. Specific surplus store. Good for branded t-shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Deal+Store+BTM+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">S K Fashion</span><span class="shop-tag">Daily</span></div><p class="shop-desc">Budget friendly daily wear in BTM.</p><a href="https://www.google.com/maps/search/?api=1&query=S+K+Fashion+BTM+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Rachaita</span><span class="shop-tag">Tailor</span></div><p class="shop-desc">Good for fabrics if you want to stitch baggy pants.</p><a href="https://www.google.com/maps/search/?api=1&query=Rachaita+BTM+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Men's Collections</span><span class="shop-tag">Formals</span></div><p class="shop-desc">Dedicated men's store for trousers and shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=Mens+Collections+BTM" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">HiFi Surplus</span><span class="shop-tag">Casuals</span></div><p class="shop-desc">JP Nagar branch. Good for casuals.</p><a href="https://www.google.com/maps/search/?api=1&query=Hifi+Surplus+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Trends (Outlet)</span><span class="shop-tag">Indian</span></div><p class="shop-desc">BTM outlet has good ethnic wear discounts.</p><a href="https://www.google.com/maps/search/?api=1&query=Trends+BTM+Layout" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Max Fashion</span><span class="shop-tag">Family</span></div><p class="shop-desc">Standard budget fashion store.</p><a href="https://www.google.com/maps/search/?api=1&query=Max+Fashion+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+    </div>
+
+    <div id="central" class="tab-content">
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Eastern Stores</span><span class="shop-tag">Surplus</span></div><p class="shop-desc">Comm St. Famous for export surplus trousers/linens.</p><a href="https://www.google.com/maps/search/?api=1&query=Eastern+Stores+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Vashi's House of Jeans</span><span class="shop-tag">Denim</span></div><p class="shop-desc">Tiny shop, huge collection. Jeans of all fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Vashis+House+of+Jeans" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Street Stalls</span><span class="shop-tag">Cheap</span></div><p class="shop-desc">Walk from Mysore Saree Udyog. ₹300 shirts/tops.</p><a href="https://www.google.com/maps/search/?api=1&query=Commercial+Street+Bangalore" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Sri Balaji Collections</span><span class="shop-tag">Mens</span></div><p class="shop-desc">Hidden gem for men's branded surplus shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=Sri+Balaji+Collections+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Lubna's</span><span class="shop-tag">Jewelry</span></div><p class="shop-desc">Aesthetic jewelry and accessories to match fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Lubnas+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Dubai Plaza</span><span class="shop-tag">Hype</span></div><p class="shop-desc">Rest House Rd. Imported "hype" streetwear/shoes.</p><a href="https://www.google.com/maps/search/?api=1&query=Dubai+Plaza+Rest+House+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Rex Plaza</span><span class="shop-tag">Jackets</span></div><p class="shop-desc">Multiple small shops selling export surplus jackets.</p><a href="https://www.google.com/maps/search/?api=1&query=Rex+Plaza+Brigade+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Tibetan Market</span><span class="shop-tag">Grunge</span></div><p class="shop-desc">Underground market. Alternative fashion & grunge fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Tibetan+Market+Brigade+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Fifth Avenue</span><span class="shop-tag">Suits</span></div><p class="shop-desc">Old school mall with independent boutiques.</p><a href="https://www.google.com/maps/search/?api=1&query=Fifth+Avenue+Brigade+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Brown Shop</span><span class="shop-tag">Winter</span></div><p class="shop-desc">Comm St. Good for winter coats and woolens.</p><a href="https://www.google.com/maps/search/?api=1&query=Brown+Shop+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Salar</span><span class="shop-tag">Shoes</span></div><p class="shop-desc">Brigade Rd. Boots and formal shoes.</p><a href="https://www.google.com/maps/search/?api=1&query=Salar+Shoes+Brigade+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Gangoor</span><span class="shop-tag">Ethnic</span></div><p class="shop-desc">Comm St. Affordable ethnic wear.</p><a href="https://www.google.com/maps/search/?api=1&query=Gangoor+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Texs Mart</span><span class="shop-tag">Mega</span></div><p class="shop-desc">Comm St Branch. Huge stock of budget clothes.</p><a href="https://www.google.com/maps/search/?api=1&query=Texs+Mart+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Fazal's</span><span class="shop-tag">Kids</span></div><p class="shop-desc">Comm St. Good for kids and women's fabric.</p><a href="https://www.google.com/maps/search/?api=1&query=Fazals+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Mysore Saree Udyog</span><span class="shop-tag">Silk</span></div><p class="shop-desc">Best for fabrics if you are stitching own designs.</p><a href="https://www.google.com/maps/search/?api=1&query=Mysore+Saree+Udyog" target="_blank" class="map-btn">View on Map</a></div>
+    </div>
+
+    <div id="oldcity" class="tab-content">
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Chickpet Plaza</span><span class="shop-tag">Fabric</span></div><p class="shop-desc">Best for fabrics (velvet/corduroy) to stitch fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Chickpet+Plaza" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">S.K. Fashions</span><span class="shop-tag">Ethnic</span></div><p class="shop-desc">Budget friendly occasion wear.</p><a href="https://www.google.com/maps/search/?api=1&query=SK+Fashions+Chickpet" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Balepet Main Rd</span><span class="shop-tag">Jeans</span></div><p class="shop-desc">The "Denim Street". Jeans for ₹400-600.</p><a href="https://www.google.com/maps/search/?api=1&query=Balepet+Main+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Moksh Creations</span><span class="shop-tag">Wholesale</span></div><p class="shop-desc">Fabrics for custom aesthetic fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Moksh+Creations+Chickpet" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Roboskin Jackets</span><span class="shop-tag">Leather</span></div><p class="shop-desc">Sudhama Nagar. Best for leather jackets.</p><a href="https://www.google.com/maps/search/?api=1&query=Roboskin+Jackets+Sudhama+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Gold Garments</span><span class="shop-tag">Stocklots</span></div><p class="shop-desc">Surplus stock lots. Hidden gems in piles.</p><a href="https://www.google.com/maps/search/?api=1&query=Gold+Garments+Sudhama+Nagar" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">National Market</span><span class="shop-tag">Tech/Shoes</span></div><p class="shop-desc">Majestic. "First Copy" watches/shoes. Bargain HARD.</p><a href="https://www.google.com/maps/search/?api=1&query=National+Market+Majestic" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Sukh Sagar Mall</span><span class="shop-tag">Imports</span></div><p class="shop-desc">Near Majestic. Good for imported clothes.</p><a href="https://www.google.com/maps/search/?api=1&query=Sukh+Sagar+Mall+Majestic" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Burma Bazaar</span><span class="shop-tag">Cheap</span></div><p class="shop-desc">For cheap perfumes, belts, and wallets.</p><a href="https://www.google.com/maps/search/?api=1&query=Burma+Bazaar+Bangalore" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Hong Kong Market</span><span class="shop-tag">Accessories</span></div><p class="shop-desc">Inside National Market area. Gadgets and wear.</p><a href="https://www.google.com/maps/search/?api=1&query=Hong+Kong+Market+Bangalore" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Himalaya Silk</span><span class="shop-tag">Sarees</span></div><p class="shop-desc">Cheap sarees/fabrics for upcycling.</p><a href="https://www.google.com/maps/search/?api=1&query=Himalaya+Silk+Centre+Chickpet" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">OK Market</span><span class="shop-tag">Scrap</span></div><p class="shop-desc">Narrow lane. Everything cheap/scrap. Adventure.</p><a href="https://www.google.com/maps/search/?api=1&query=OK+Market+Chickpet" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Sunday Bazaar</span><span class="shop-tag">Flea</span></div><p class="shop-desc">BVK Iyengar Rd (Sun Mornings). Thrift heaven.</p><a href="https://www.google.com/maps/search/?api=1&query=BVK+Iyengar+Road" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Navrang Boutique</span><span class="shop-tag">Velvet</span></div><p class="shop-desc">Good for specific heavy fabrics.</p><a href="https://www.google.com/maps/search/?api=1&query=Navrang+Boutique+Chickpet" target="_blank" class="map-btn">View on Map</a></div>
+        <div class="shop-card"><div class="shop-header"><span class="shop-name">Avenue Road</span><span class="shop-tag">Books</span></div><p class="shop-desc">Second-hand books and random clothing piles.</p><a href="https://www.google.com/maps/search/?api=1&query=Avenue+Road+Bangalore" target="_blank" class="map-btn">View on Map</a></div>
+    </div>
+
+</div>
+
+<script>
+    function openTab(evt, locName) {
+        var i, tabcontent, tablinks;
+
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+            tabcontent[i].style.display = "none";
+        }
+
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+
+        document.getElementById(locName).style.display = "grid";
+        setTimeout(() => {
+            document.getElementById(locName).classList.add("active");
+        }, 10);
+        
+        if(evt) {
+            evt.currentTarget.classList.add("active");
+        }
+    }
+</script>
+
+</body>
+</html>
