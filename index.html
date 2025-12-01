@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bangalore Ultimate Thrift & Surplus Map</title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dqwbkjfuh/image/upload/v1764588498/Screenshot_2025-11-26_at_6.58.01_PM_m1stjx.png">
+    
     <style>
         :root {
 
@@ -54,12 +56,15 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
+            white-space: nowrap;
         }
         
+        /* Circular Image */
         h1 img {
             height: 40px;
-            border-radius: 6px; /* Soft edges for the screenshot */
-            object-fit: contain;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .subtitle {
@@ -68,7 +73,7 @@
             max-width: 600px;
         }
 
-        /* Original Tab Style */
+        /* Tabs */
         .tabs-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -82,10 +87,9 @@
             border-bottom: 1px solid var(--border-default);
             margin-bottom: 24px;
             scrollbar-width: none;
-            justify-content: flex-start; /* Allows scrolling on mobile */
+            justify-content: flex-start;
         }
 
-        /* Center tabs on desktop if they fit */
         @media (min-width: 900px) {
             .tabs {
                 justify-content: center;
@@ -117,10 +121,10 @@
         .tab-btn.active {
             font-weight: 600;
             opacity: 1;
-            border-bottom: 2px solid var(--accent-orange); 
+            border-bottom: 2px solid var(--accent-orange);
         }
 
-        /* Content Area */
+        /* Content */
         .content-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -138,12 +142,34 @@
             gap: 16px;
         }
 
+        /* Map Container & Dark Mode Hack */
+        .area-map-container {
+            grid-column: 1 / -1;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-default);
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: var(--bg-subtle);
+            height: 350px;
+            position: relative;
+        }
+
+        .area-map-frame {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+            /* DARK MODE FILTER: Inverts light map to dark, then rotates hue to fix colors */
+            filter: invert(90%) hue-rotate(180deg) contrast(90%) saturate(85%);
+            -webkit-filter: invert(90%) hue-rotate(180deg) contrast(90%) saturate(85%);
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-
+        /* Shop Cards */
         .shop-card {
             background-color: var(--bg-canvas);
             border: 1px solid var(--border-default);
@@ -191,16 +217,7 @@
             flex-grow: 1;
         }
 
-        .shop-meta {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 12px;
-            border-top: 1px solid var(--border-default);
-            padding-top: 12px;
-        }
-
+        /* Minimal Button Styles */
         .map-btn {
             display: block;
             background-color: var(--btn-bg);
@@ -218,8 +235,30 @@
 
         .map-btn:hover {
             background-color: var(--accent-green);
-            color: white;
+            color: #ffffff;
             border-color: var(--accent-green);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
+            header {
+                padding: 16px 12px;
+            }
+            h1 {
+                font-size: 16px;
+                gap: 8px;
+            }
+            h1 img {
+                height: 28px;
+                width: 28px;
+            }
+            .subtitle {
+                font-size: 12px;
+                margin-top: 2px;
+            }
+            .area-map-container {
+                height: 250px;
+            }
         }
     </style>
 </head>
@@ -228,7 +267,7 @@
 <header>
     <h1>
         <img src="https://res.cloudinary.com/dqwbkjfuh/image/upload/v1764588498/Screenshot_2025-11-26_at_6.58.01_PM_m1stjx.png" alt="Logo">
-        Bangalore Clothing Guide
+        Bangalore Budget Shopping Guide
     </h1>
     <div class="subtitle">Curated list of 70+ Thrift Stores, Surplus Warehouses & Factory Outlets</div>
 </header>
@@ -247,6 +286,10 @@
 <div class="content-container">
 
     <div id="hsr" class="tab-content active">
+        <div class="area-map-container">
+            <iframe class="area-map-frame" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15555.23456789012!2d77.638!3d12.912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sclothing%20store%20surplus!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"></iframe>
+        </div>
+        
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Branded Apparels & Co</span><span class="shop-tag">Surplus</span></div><p class="shop-desc">Top Pick. Multi-brand surplus. Branded shirts/chinos at 60-70% off.</p><a href="https://www.google.com/maps/search/?api=1&query=Branded+Apparels+And+Co+HSR" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">World of Brands</span><span class="shop-tag">Winter</span></div><p class="shop-desc">Massive stock. Best for sweatshirts, hoodies, and zippers.</p><a href="https://www.google.com/maps/search/?api=1&query=World+of+Brands+HSR+Sector+6" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Classic Export Surplus</span><span class="shop-tag">Budget</span></div><p class="shop-desc">Basement store. Casuals, baggy tees, and jeans for cheap.</p><a href="https://www.google.com/maps/search/?api=1&query=Classic+Export+Surplus+HSR" target="_blank" class="map-btn">View on Map</a></div>
@@ -265,6 +308,10 @@
     </div>
 
     <div id="koramangala" class="tab-content">
+        <div class="area-map-container">
+            <iframe class="area-map-frame" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15554.789!2d77.618!3d12.935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sclothing%20store%20koramangala!5e0!3m2!1sen!2sin"></iframe>
+        </div>
+
         <div class="shop-card"><div class="shop-header"><span class="shop-name">EcoDhaga</span><span class="shop-tag">Thrift</span></div><p class="shop-desc">Sustainable vintage jackets/shirts. True thrift experience.</p><a href="https://www.google.com/maps/search/?api=1&query=EcoDhaga+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Hum India</span><span class="shop-tag">Legendary</span></div><p class="shop-desc">Huge surplus stock. Best for jackets, cargos, and shirts.</p><a href="https://www.google.com/maps/search/?api=1&query=Hum+India+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Tibet Mall</span><span class="shop-tag">Imports</span></div><p class="shop-desc">Imported winter jackets, boots, and edgy fashion.</p><a href="https://www.google.com/maps/search/?api=1&query=Tibet+Mall+Koramangala" target="_blank" class="map-btn">View on Map</a></div>
@@ -283,6 +330,10 @@
     </div>
 
     <div id="jayanagar" class="tab-content">
+        <div class="area-map-container">
+            <iframe class="area-map-frame" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15555.2!2d77.584!3d12.929!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sclothing%20jayanagar!5e0!3m2!1sen!2sin"></iframe>
+        </div>
+
         <div class="shop-card"><div class="shop-header"><span class="shop-name">4th Block Complex</span><span class="shop-tag">Hub</span></div><p class="shop-desc">50+ shops inside for slippers/pyjamas. Bargain hard.</p><a href="https://www.google.com/maps/search/?api=1&query=Jayanagar+4th+Block+Shopping+Complex" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">The Discount Store</span><span class="shop-tag">Basics</span></div><p class="shop-desc">Huge discounts on mixed apparel. Good for basics.</p><a href="https://www.google.com/maps/search/?api=1&query=The+Discount+Store+Jayanagar" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Street Vendors</span><span class="shop-tag">Cheap</span></div><p class="shop-desc">Opposite complex. Export reject joggers and tees.</p><a href="https://www.google.com/maps/search/?api=1&query=Jayanagar+4th+Block+Bus+Stand" target="_blank" class="map-btn">View on Map</a></div>
@@ -301,6 +352,10 @@
     </div>
 
     <div id="jpnagar" class="tab-content">
+        <div class="area-map-container">
+            <iframe class="area-map-frame" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15555.5!2d77.600!3d12.915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sclothing%20btm%20layout!5e0!3m2!1sen!2sin"></iframe>
+        </div>
+
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Texs Mart</span><span class="shop-tag">Mega</span></div><p class="shop-desc">Offline Myntra sale. Innerwear to jackets, very cheap.</p><a href="https://www.google.com/maps/search/?api=1&query=Texs+Mart+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Escape Closet</span><span class="shop-tag">Aesthetic</span></div><p class="shop-desc">Vintage jackets, corsets, baggy denim. Unique finds.</p><a href="https://www.google.com/maps/search/?api=1&query=Escape+Closet+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Bengaluru Brand Warehouse</span><span class="shop-tag">Premium</span></div><p class="shop-desc">Surplus family store. Garments and footwear.</p><a href="https://www.google.com/maps/search/?api=1&query=Bengaluru+Brand+Warehouse+JP+Nagar" target="_blank" class="map-btn">View on Map</a></div>
@@ -319,6 +374,10 @@
     </div>
 
     <div id="central" class="tab-content">
+        <div class="area-map-container">
+            <iframe class="area-map-frame" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15551.8!2d77.609!3d12.975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1scommercial%20street%20shopping!5e0!3m2!1sen!2sin"></iframe>
+        </div>
+
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Eastern Stores</span><span class="shop-tag">Surplus</span></div><p class="shop-desc">Comm St. Famous for export surplus trousers/linens.</p><a href="https://www.google.com/maps/search/?api=1&query=Eastern+Stores+Commercial+Street" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Vashi's House of Jeans</span><span class="shop-tag">Denim</span></div><p class="shop-desc">Tiny shop, huge collection. Jeans of all fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Vashis+House+of+Jeans" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Street Stalls</span><span class="shop-tag">Cheap</span></div><p class="shop-desc">Walk from Mysore Saree Udyog. ₹300 shirts/tops.</p><a href="https://www.google.com/maps/search/?api=1&query=Commercial+Street+Bangalore" target="_blank" class="map-btn">View on Map</a></div>
@@ -337,6 +396,10 @@
     </div>
 
     <div id="oldcity" class="tab-content">
+        <div class="area-map-container">
+            <iframe class="area-map-frame" src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d15552.1!2d77.577!3d12.969!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1schickpet%20market!5e0!3m2!1sen!2sin"></iframe>
+        </div>
+
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Chickpet Plaza</span><span class="shop-tag">Fabric</span></div><p class="shop-desc">Best for fabrics (velvet/corduroy) to stitch fits.</p><a href="https://www.google.com/maps/search/?api=1&query=Chickpet+Plaza" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">S.K. Fashions</span><span class="shop-tag">Ethnic</span></div><p class="shop-desc">Budget friendly occasion wear.</p><a href="https://www.google.com/maps/search/?api=1&query=SK+Fashions+Chickpet" target="_blank" class="map-btn">View on Map</a></div>
         <div class="shop-card"><div class="shop-header"><span class="shop-name">Balepet Main Rd</span><span class="shop-tag">Jeans</span></div><p class="shop-desc">The "Denim Street". Jeans for ₹400-600.</p><a href="https://www.google.com/maps/search/?api=1&query=Balepet+Main+Road" target="_blank" class="map-btn">View on Map</a></div>
